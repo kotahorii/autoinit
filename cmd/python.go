@@ -1,28 +1,26 @@
-/*
-Copyright © 2022 NAME HERE <EMAIL ADDRESS>
-
-*/
 package cmd
 
 import (
-	"fmt"
-	"log"
 	"os/exec"
-	"unsafe"
+	"strings"
 
 	"github.com/spf13/cobra"
 )
+
+func execCommand(command string) error {
+	chars := strings.Split(command, " ")
+	if err := exec.Command(chars[0], chars[1:]...).Run(); err != nil {
+		return err
+	}
+	return nil
+}
 
 var pythonCmd = &cobra.Command{
 	Use:   "python",
 	Short: "create python environment",
 	Long:  `create venv and pip install black flake8.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		if b, err := exec.Command("python3", "--version").Output(); err != nil {
-			log.Fatal(err)
-		} else {
-			fmt.Println(*(*string)(unsafe.Pointer(&b)))
-		}
+		execCommand("python3 -m venv venv")
 	},
 }
 
